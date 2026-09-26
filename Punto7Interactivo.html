@@ -1,254 +1,32 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba Plotly</title>
 
-<title>Transformación de Señales x(t)</title>
+<script src="https://cdn.plot.ly/plotlysscript>
 
-<script src="https://cdn.plot.ly/.min.jsscript>
-
-<style>
-body{
-    font-family: Arial, sans-serif;
-    margin:20px;
-}
-
-.container{
-    display:flex;
-    gap:20px;
-}
-
-.panel{
-    width:250px;
-    border:1px solid #ccc;
-    padding:15px;
-    border-radius:10px;
-}
-
-#grafica{
-    flex:1;
-    height:600px;
-}
-
-label{
-    display:block;
-    margin-top:10px;
-}
-
-.ecuacion{
-    margin-top:20px;
-    font-size:20px;
-    font-weight:bold;
-}
-</style>
 </head>
 
 <body>
 
-<h2>Transformación Interactiva de Señales</h2>
-
-<div class="container">
-
-<div class="panel">
-
-<h3>Controles</h3>
-
-<label>
-<input type="checkbox" id="tras">
-Activar traslación
-</label>
-
-<label>
-k =
-<span id="valorK">0</span>
-</label>
-
-<input type="range"
-id="sliderK"
-min="-5"
-max="5"
-step="0.1"
-value="0">
-
-<br><br>
-
-<label>
-<input type="checkbox" id="ref">
-Activar reflexión
-</label>
-
-<br>
-
-<label>
-<input type="checkbox" id="esc">
-Activar escalamiento
-</label>
-
-<label>
-a =
-<span id="valorA">1</span>
-</label>
-
-<input type="range"
-id="sliderA"
-min="0.333"
-max="3"
-step="0.01"
-value="1">
-
-<div class="ecuacion" id="ecuacion">
-y(t)=x(t)
-</div>
-
-</div>
+<h1>Prueba</h1>
 
 <div id="grafica"></div>
 
-</div>
-
 <script>
 
-// Vector tiempo
-let t=[];
-
-for(let x=-22; x<=22; x+=0.05){
-    t.push(x);
+Plotly.newPlot(
+'grafica',
+[
+{
+x:[1,2,3,4],
+y:[1,4,2,5],
+type:'scatter',
+mode:'lines'
 }
-
-// Señal original
-function xf(t){
-
-    if(t>=-5 && t<-3) return 1;
-    if(t>=-3 && t<-1) return 2;
-    if(t>=-1 && t<2) return 1.5;
-    if(t>=2 && t<4) return 0.5;
-
-    return 0;
-}
-
-function actualizar(){
-
-    let usarTras =
-    document.getElementById("tras").checked;
-
-    let usarRef =
-    document.getElementById("ref").checked;
-
-    let usarEsc =
-    document.getElementById("esc").checked;
-
-    let k =
-    parseFloat(
-    document.getElementById("sliderK").value);
-
-    let a =
-    parseFloat(
-    document.getElementById("sliderA").value);
-
-    document.getElementById("valorK").innerHTML =
-    k.toFixed(2);
-
-    document.getElementById("valorA").innerHTML =
-    a.toFixed(2);
-
-    if(!usarTras) k=0;
-    if(!usarEsc) a=1;
-
-    let signo=1;
-
-    if(usarRef) signo=-1;
-
-    let y=[];
-    let original=[];
-
-    for(let i=0;i<t.length;i++){
-
-        original.push(xf(t[i]));
-
-        let argumento =
-        signo*a*(t[i]-k);
-
-        y.push(
-        xf(argumento)
-        );
-    }
-
-    Plotly.newPlot(
-        "grafica",
-        [
-            {
-                x:t,
-                y:y,
-                mode:"lines",
-                name:"Transformada",
-                line:{
-                    width:3,
-                    color:"blue"
-                }
-            },
-            {
-                x:t,
-                y:original,
-                mode:"lines",
-                name:"Original",
-                line:{
-                    dash:"dash",
-                    color:"red"
-                }
-            }
-        ],
-        {
-            title:"Transformación interactiva de x(t)",
-            xaxis:{
-                title:"Tiempo [s]",
-                range:[-22,22]
-            },
-            yaxis:{
-                title:"Amplitud",
-                range:[-0.5,2.5]
-            }
-        }
-    );
-
-    let texto="t";
-
-    if(usarTras){
-
-        if(k>=0)
-            texto=`(t-${k.toFixed(2)})`;
-        else
-            texto=`(t+${Math.abs(k).toFixed(2)})`;
-    }
-
-    if(usarEsc && Math.abs(a-1)>0.001){
-        texto=`${a.toFixed(2)}${texto}`;
-    }
-
-    if(usarRef){
-        texto=`-(${texto})`;
-    }
-
-    document.getElementById("ecuacion").innerHTML=
-    `y(t)=x(${texto})`;
-}
-
-document.getElementById("tras")
-.addEventListener("change",actualizar);
-
-document.getElementById("ref")
-.addEventListener("change",actualizar);
-
-document.getElementById("esc")
-.addEventListener("change",actualizar);
-
-document.getElementById("sliderK")
-.addEventListener("input",actualizar);
-
-document.getElementById("sliderA")
-.addEventListener("input",actualizar);
-
-actualizar();
+]
+);
 
 </script>
 
